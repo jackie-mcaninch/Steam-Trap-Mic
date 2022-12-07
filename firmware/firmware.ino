@@ -25,8 +25,8 @@ void loop() {
     read_in = analogRead (MIC);
     data[counter % HISTORY_THRESHOLD] = read_in;
 
-    // check if data array is fully populated
-    if (counter > HISTORY_THRESHOLD) {
+    // check periodically for peak to peak measure
+    if ((counter % HISTORY_THRESHOLD) == (HISTORY_THRESHOLD-1)) {
         // discover min and max to calculate amplitude
         min = data[0];
         max = data[0];
@@ -41,9 +41,11 @@ void loop() {
         // determine whether valve is open or closed
         if ((max - min) > AMPLITUDE_THRESHOLD) {
             Serial.println(1);
+            digitalWrite(RED_PIN, HIGH);
         }
         else {
             Serial.println(0);
+            digitalWrite(RED_PIN, LOW);
         }
     }
     counter++;
